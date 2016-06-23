@@ -134,6 +134,38 @@ describe CASino::LDAPAuthenticator do
       end
     end
 
+    context 'when an extra_attributes value is an array' do
+      let(:fullname) { 'Example User' }
+      let(:email) { "#{username}@example.org" }
+      let(:membership) { ["cn=group1", "cn=group2"] }
+      let(:ldap_entry) {
+        entry = Net::LDAP::Entry.new
+        {:uid => username, :displayname => fullname, :mail => email, :memberof => membership}.each do |key, value|
+          entry[key] = Array(value)
+        end
+        entry
+      }
+      before(:each) do
+        connection.stub(:bind_as) do
+          ldap_entry
+        end
+        connection.stub(:search) do
+          ldap_entry
+        end
+      end
+
+      it 'returns the user data' do
+        subject.validate(username, password).should == {
+          username: username,
+          extra_attributes: {
+            :email => email,
+            :fullname => fullname,
+            :memberof => membership
+          }
+        }
+      end
+    end
+
     context 'when validation succeeds for user with complete data' do
       let(:fullname) { 'Example User' }
       let(:email) { "#{username}@example.org" }
