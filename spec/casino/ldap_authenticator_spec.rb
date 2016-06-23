@@ -43,7 +43,7 @@ describe CASino::LDAPAuthenticator do
       end
 
       it 'returns the extra attributes' do
-        subject.load_user_data(username)[:extra_attributes][:email].should eq(email)
+        subject.load_user_data(username)[:extra_attributes][:email].should eq([email])
       end
     end
 
@@ -126,9 +126,9 @@ describe CASino::LDAPAuthenticator do
         subject.validate(username, password).should == {
           username: username,
           extra_attributes: {
-            :email => email,
-            :fullname => fullname,
-            :memberof => ''
+            :email => [email],
+            :fullname => [fullname],
+            :memberof => []
           }
         }
       end
@@ -158,9 +158,9 @@ describe CASino::LDAPAuthenticator do
         subject.validate(username, password).should == {
           username: username,
           extra_attributes: {
-            :email => email,
-            :fullname => fullname,
-            :memberof => membership
+            :email => Array(email),
+            :fullname => Array(fullname),
+            :memberof => Array(membership)
           }
         }
       end
@@ -190,9 +190,9 @@ describe CASino::LDAPAuthenticator do
         subject.validate(username, password).should == {
           username: username,
           extra_attributes: {
-            :email => email,
-            :fullname => fullname,
-            :memberof => membership
+            :email => [email],
+            :fullname => [fullname],
+            :memberof => [membership]
           }
         }
       end
