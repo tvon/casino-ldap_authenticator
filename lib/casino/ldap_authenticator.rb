@@ -51,9 +51,7 @@ class CASino::LDAPAuthenticator
     include_attributes = @options[:extra_attributes].values + [username_attribute]
     user = ldap.search(:base => @options[:base], :filter => user_filter(username), :attributes => include_attributes)
     return nil if user.nil?
-    if user.is_a?(Array)
-      user = user.first
-    end
+    user = Array(user).first
     user_data(user)
   end
 
@@ -82,9 +80,7 @@ class CASino::LDAPAuthenticator
     result = {}
     @options[:extra_attributes].each do |index_result, index_ldap|
       value = user_plain[index_ldap]
-      if value
-        result[index_result] = value
-      end
+      result[index_result] = value if value
     end
 
     result
