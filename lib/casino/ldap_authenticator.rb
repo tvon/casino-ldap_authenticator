@@ -77,17 +77,16 @@ class CASino::LDAPAuthenticator
   end
 
   def extra_attributes(user_plain)
-    if @options[:extra_attributes]
-      result = {}
-      @options[:extra_attributes].each do |index_result, index_ldap|
-        value = user_plain[index_ldap]
-        if value
-          result[index_result] = Array(value)
-        end
+    return unless @options[:extra_attributes]
+
+    result = {}
+    @options[:extra_attributes].each do |index_result, index_ldap|
+      value = user_plain[index_ldap]
+      if value
+        result[index_result] = value
       end
-      result
-    else
-      nil
     end
+
+    result
   end
 end
